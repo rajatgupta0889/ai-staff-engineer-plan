@@ -1,0 +1,1415 @@
+
+<h2 class="sr-only">90-Day Staff Engineer Transformation Plan — Interactive weekly breakdown covering system design, AI engineering, distributed systems, and monetization strategy</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.plan-header {
+  padding: 2rem 0 1.5rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  margin-bottom: 1.5rem;
+}
+.plan-meta {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem;
+}
+.badge {
+  font-size: 12px; padding: 3px 10px; border-radius: 20px;
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+.badge.highlight {
+  background: #E6F1FB; color: #0C447C;
+  border-color: #B5D4F4;
+}
+.phase-tabs {
+  display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+.phase-tab {
+  padding: 8px 16px; border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  cursor: pointer; font-size: 14px; font-weight: 500;
+  transition: all 0.15s;
+}
+.phase-tab:hover { background: var(--color-background-secondary); }
+.phase-tab.active {
+  background: #042C53; color: #B5D4F4;
+  border-color: #042C53;
+}
+.phase-content { display: none; }
+.phase-content.active { display: block; }
+
+.week-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;
+  margin-bottom: 1.5rem;
+}
+.week-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.week-card:hover { border-color: var(--color-border-secondary); }
+.week-card.expanded { border-color: #378ADD; }
+.week-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;
+}
+.week-num {
+  font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.week-phase-tag {
+  font-size: 11px; padding: 2px 8px; border-radius: 20px;
+}
+.week-title {
+  font-size: 15px; font-weight: 500; color: var(--color-text-primary);
+  margin-bottom: 6px; line-height: 1.4;
+}
+.week-focus {
+  font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;
+}
+.week-detail {
+  display: none; margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 0.5px solid var(--color-border-tertiary);
+}
+.week-card.expanded .week-detail { display: block; }
+
+.detail-section { margin-bottom: 1rem; }
+.detail-label {
+  font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.detail-list {
+  list-style: none; padding: 0;
+}
+.detail-list li {
+  font-size: 13px; color: var(--color-text-secondary);
+  padding: 3px 0; display: flex; gap: 8px; align-items: flex-start;
+  line-height: 1.4;
+}
+.detail-list li::before {
+  content: "→"; color: var(--color-text-tertiary); flex-shrink: 0; margin-top: 1px;
+}
+.kpi-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
+}
+.kpi-chip {
+  font-size: 12px; padding: 3px 10px; border-radius: 20px;
+  background: #EAF3DE; color: #27500A;
+  border: 0.5px solid #C0DD97;
+}
+.day-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px;
+  margin-top: 4px;
+}
+.day-block {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 8px 10px;
+}
+.day-name {
+  font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.day-task {
+  font-size: 12px; color: var(--color-text-primary); line-height: 1.4; margin-bottom: 2px;
+}
+.day-time {
+  font-size: 11px; color: var(--color-text-tertiary);
+}
+
+.section-card {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 15px; font-weight: 500; color: var(--color-text-primary);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.section-title i { font-size: 18px; color: var(--color-text-secondary); }
+
+.project-milestone {
+  display: flex; gap: 12px; align-items: flex-start; padding: 10px 0;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+.project-milestone:last-child { border-bottom: none; }
+.milestone-week {
+  font-size: 11px; font-weight: 500;
+  background: #E6F1FB; color: #0C447C;
+  border-radius: var(--border-radius-md);
+  padding: 3px 8px; flex-shrink: 0; margin-top: 2px;
+  border: 0.5px solid #B5D4F4;
+}
+.milestone-content { flex: 1; }
+.milestone-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 2px; }
+.milestone-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.4; }
+
+.checkpoint-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px;
+}
+.checkpoint-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+}
+.checkpoint-month {
+  font-size: 12px; font-weight: 500; color: var(--color-text-tertiary);
+  margin-bottom: 8px;
+}
+.checkpoint-card ul {
+  list-style: none; padding: 0;
+}
+.checkpoint-card ul li {
+  font-size: 13px; color: var(--color-text-secondary);
+  padding: 2px 0; display: flex; gap: 6px;
+}
+.checkpoint-card ul li::before { content: "✓"; color: #3B6D11; flex-shrink: 0; }
+
+.monetize-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;
+}
+.monetize-card {
+  background: var(--color-background-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+}
+.monetize-title {
+  font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px;
+}
+.monetize-desc {
+  font-size: 13px; color: var(--color-text-secondary); line-height: 1.4; margin-bottom: 6px;
+}
+.monetize-rev {
+  font-size: 12px; font-weight: 500; color: #0F6E56;
+}
+
+.mistake-list {
+  list-style: none; padding: 0;
+}
+.mistake-list li {
+  display: flex; gap: 10px; padding: 8px 0;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  font-size: 14px; color: var(--color-text-secondary); line-height: 1.4;
+  align-items: flex-start;
+}
+.mistake-list li:last-child { border-bottom: none; }
+.mistake-x { color: #A32D2D; flex-shrink: 0; font-size: 14px; margin-top: 2px; }
+
+.resource-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.resource-tag {
+  font-size: 12px; padding: 3px 10px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+}
+</style>
+
+<div class="plan-header">
+  <div class="plan-meta">
+    <span class="badge highlight">90-Day Plan</span>
+    <span class="badge">8–12 hrs/week (sustainable pace)</span>
+    <span class="badge">Staff Engineer Track</span>
+    <span class="badge">AI-Era Optimized</span>
+    <span class="badge">No LeetCode Grind</span>
+  </div>
+  <div style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; max-width: 600px;">
+    Three phases: build your foundation, ship a production AI system, then monetize. Each week compounds on the last. Click any week card to expand its daily breakdown.
+  </div>
+
+<div style="margin: 1rem 0 1.5rem; padding: 1rem 1.25rem; border-radius: 12px; background:#FFF8E6; border:1px solid #F2D27A;">
+  <div style="font-size:16px; font-weight:600; margin-bottom:8px; color:#7A5200;">
+    Recommended Execution Adjustments (Personalized)
+  </div>
+  <ul style="margin-left: 18px; color:#5B4A1E; line-height:1.6; font-size:14px;">
+    <li>Extend the roadmap from 90 days → 120–150 days for deeper mastery and sustainability.</li>
+    <li>Use a MUST / SHOULD / BONUS structure weekly to avoid burnout while working full-time.</li>
+    <li>Focus more on Java backend excellence, distributed systems, observability, and production AI integration.</li>
+    <li>Simplify advanced AI-agent orchestration initially. Prioritize RAG, retrieval quality, embeddings, and evaluation.</li>
+    <li>Add 1 mock system design session and 2–3 light DSA problems weekly for interview readiness.</li>
+  </ul>
+</div>
+
+
+<div class="section-card" style="margin-bottom:1.5rem;">
+  <div class="section-title">Week 0 — Setup & Consistency System</div>
+  <ul class="detail-list" style="font-size:14px;">
+    <li>Set up GitHub repositories, project structure, and learning tracker.</li>
+    <li>Create a weekly review system: wins, blockers, next-week priorities.</li>
+    <li>Define MUST / SHOULD / BONUS tasks for every week before starting.</li>
+    <li>Block fixed study hours in calendar for consistency instead of intensity.</li>
+    <li>Clean up LinkedIn + GitHub profile before publishing technical artifacts.</li>
+  </ul>
+</div>
+
+<div class="phase-tabs">
+  <button class="phase-tab active" onclick="showPhase('phase1')">Phase 1 — Weeks 1–4: Foundation</button>
+  <button class="phase-tab" onclick="showPhase('phase2')">Phase 2 — Weeks 5–8: Build & Ship</button>
+  <button class="phase-tab" onclick="showPhase('phase3')">Phase 3 — Weeks 9–12: Scale & Monetize</button>
+  <button class="phase-tab" onclick="showPhase('project')">Project Blueprint</button>
+  <button class="phase-tab" onclick="showPhase('monetize')">Monetization</button>
+  <button class="phase-tab" onclick="showPhase('checkpoints')">Checkpoints & Mistakes</button>
+</div>
+
+<!-- PHASE 1 -->
+<div id="phase1" class="phase-content active">
+  <div class="week-grid">
+
+    <!-- WEEK 1 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 1</span>
+        <span class="week-phase-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;">Foundation</span>
+      </div>
+      <div class="week-title">JVM Internals & Performance Mental Models</div>
+      <div class="week-focus">GC algorithms, memory model, JIT compilation, heap analysis. Stop guessing, start knowing.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>JVM memory areas: heap regions (Eden, S0/S1, Old Gen), metaspace, stack frames</li>
+            <li>GC algorithms: G1GC, ZGC, Shenandoah — when to use which and why</li>
+            <li>JIT compilation: C1 vs C2, escape analysis, inlining, on-stack replacement</li>
+            <li>ThreadLocal, volatile semantics, happens-before in JMM</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">JVM memory model: draw heap layout, understand GC roots</div>
+              <div class="day-time">2h study + 30m notes</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">G1GC deep dive: pause targets, region sizing, mixed GC</div>
+              <div class="day-time">2h study</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Profile a real Java app with VisualVM or async-profiler</div>
+              <div class="day-time">2h lab</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">JIT internals: understand output of -XX:+PrintCompilation</div>
+              <div class="day-time">1.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Write a LinkedIn post: "3 things I learned debugging JVM GC this week"</div>
+              <div class="day-time">1h writing</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>GC tuning runbook in GitHub: flags, monitoring, alert thresholds</li>
+            <li>Heap dump analysis walkthrough (documented, not just done)</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Resources</div>
+          <div class="resource-row">
+            <span class="resource-tag">Java Performance (Scott Oaks)</span>
+            <span class="resource-tag">async-profiler</span>
+            <span class="resource-tag">JVM Anatomy Quarks (Aleksey Shipilëv)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">1 profiling session completed</span>
+            <span class="kpi-chip">GC runbook published</span>
+            <span class="kpi-chip">1 LinkedIn post</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Career Impact</div>
+          <ul class="detail-list">
+            <li>JVM internals separate seniors from staff — most engineers never go here</li>
+            <li>Directly enables salary/consulting leverage in performance-critical roles</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 2</span>
+        <span class="week-phase-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;">Foundation</span>
+      </div>
+      <div class="week-title">Concurrency, Async, and Executor Mastery</div>
+      <div class="week-focus">Thread pools, CompletableFuture, Virtual Threads (Java 21), reactive patterns.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>ThreadPoolExecutor internals: queue types, rejection policies, thread lifecycle</li>
+            <li>CompletableFuture chaining, exception handling, thenCompose vs thenCombine</li>
+            <li>Java 21 Virtual Threads (Project Loom): structured concurrency, scoped values</li>
+            <li>Reactive basics: Backpressure, Publisher/Subscriber, when NOT to use reactive</li>
+            <li>Common concurrency pitfalls: lock ordering, livelocks, spurious wakeups</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Build a custom ThreadPoolExecutor with metrics instrumentation</div>
+              <div class="day-time">2.5h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">CompletableFuture patterns: pipeline with timeout, retry, fallback</div>
+              <div class="day-time">2h lab</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Explore Virtual Threads: benchmark vs platform threads for I/O bound tasks</div>
+              <div class="day-time">2h benchmark</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Reproduce and fix 2 concurrency bugs in a sample codebase</div>
+              <div class="day-time">2h debugging</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Document findings + GitHub README. LinkedIn: "Virtual Threads changed how I think about I/O"</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>GitHub repo: concurrency-patterns-java with 5 annotated examples</li>
+            <li>Benchmark results: Virtual Threads vs platform threads (I/O scenarios)</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Resources</div>
+          <div class="resource-row">
+            <span class="resource-tag">Java Concurrency in Practice</span>
+            <span class="resource-tag">JEP 444 (Virtual Threads)</span>
+            <span class="resource-tag">JMH (benchmarking)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">5 patterns in GitHub</span>
+            <span class="kpi-chip">benchmark published</span>
+            <span class="kpi-chip">1 LinkedIn post</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 3</span>
+        <span class="week-phase-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;">Foundation</span>
+      </div>
+      <div class="week-title">Distributed Systems Core: Consensus, Replication, CAP</div>
+      <div class="week-focus">Raft consensus, replication strategies, eventual vs strong consistency, partition handling.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>CAP theorem in practice — what tradeoffs Kafka, Cassandra, Postgres each make</li>
+            <li>Raft consensus: leader election, log replication, snapshotting</li>
+            <li>Replication: sync vs async, semi-sync, multi-leader, leaderless (Dynamo style)</li>
+            <li>Consistency models: linearizability, sequential, causal, eventual</li>
+            <li>CRDT basics: why they matter for distributed state</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Read Raft paper; draw state machine on paper. Map to Kafka/Zookeeper or KRaft</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Set up a 3-node Raft demo with etcd locally. Kill nodes, observe leader re-election</div>
+              <div class="day-time">2h lab</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Compare Cassandra (AP) vs Postgres (CP): write a "choose your DB" decision doc</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Study distributed transactions: 2PC, Saga pattern, compensating transactions</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Publish system design note: "How I think about consistency when choosing a database"</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Architecture decision record (ADR) template for database selection</li>
+            <li>Notion/GitHub: distributed systems cheatsheet (your own words, not a copy)</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Resources</div>
+          <div class="resource-row">
+            <span class="resource-tag">Raft paper (Ongaro)</span>
+            <span class="resource-tag">Designing Data-Intensive Applications (Kleppmann)</span>
+            <span class="resource-tag">Martin Kleppmann's blog</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">ADR template published</span>
+            <span class="kpi-chip">Raft demo running</span>
+            <span class="kpi-chip">1 LinkedIn post</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Career Impact</div>
+          <ul class="detail-list">
+            <li>This is the #1 topic Staff/Principal interviews probe at Google/Microsoft</li>
+            <li>Understanding tradeoffs (not just naming theorems) is the signal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 4</span>
+        <span class="week-phase-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;">Foundation</span>
+      </div>
+      <div class="week-title">Kafka, Event-Driven Architecture & Observability Foundations</div>
+      <div class="week-focus">Kafka internals, consumer groups, offset management, OpenTelemetry, distributed tracing.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Kafka: partitions, replication factor, ISR, producer acks, consumer group rebalancing</li>
+            <li>At-least-once vs exactly-once semantics (transactional producers)</li>
+            <li>Event-driven patterns: Outbox, CQRS, event sourcing, choreography vs orchestration</li>
+            <li>OpenTelemetry: traces, metrics, logs — the three pillars done right</li>
+            <li>Distributed tracing: propagation, sampling strategies, correlation IDs</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Run Kafka locally (Docker). Produce/consume, inspect offsets, trigger rebalance</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Implement Transactional Outbox pattern with Kafka + Postgres (demo app)</div>
+              <div class="day-time">3h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Add OpenTelemetry to the demo app: traces → Jaeger, metrics → Prometheus</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Design the Kafka topology for your 90-day project (first sketch)</div>
+              <div class="day-time">2h design</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">LinkedIn: "Why the Outbox Pattern saved us from data loss" (use your demo as example)</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Working Outbox demo: GitHub repo with Docker Compose, README, architecture diagram</li>
+            <li>First project architecture sketch in Excalidraw or Miro (shared publicly)</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">Outbox demo on GitHub</span>
+            <span class="kpi-chip">OTel traces running</span>
+            <span class="kpi-chip">project sketch done</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Phase 1 Review Questions</div>
+          <ul class="detail-list">
+            <li>Can you explain G1GC tuning decisions to a senior engineer without notes?</li>
+            <li>Can you reason about which consistency model a system needs from first principles?</li>
+            <li>Do you have 4 published GitHub artifacts and 4 LinkedIn posts?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div id="phase2" class="phase-content">
+  <div class="week-grid">
+
+    <!-- WEEK 5 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 5</span>
+        <span class="week-phase-tag" style="background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;">Build</span>
+      </div>
+      <div class="week-title">System Design: Scaling Patterns & Database Internals</div>
+      <div class="week-focus">Caching layers, read replicas, sharding, query optimization, connection pooling.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Caching: write-through, write-behind, cache-aside, read-through. When each breaks</li>
+            <li>Database internals: B-tree vs LSM tree, WAL, MVCC, vacuum in Postgres</li>
+            <li>Query optimization: EXPLAIN ANALYZE, index types, covering indexes, partial indexes</li>
+            <li>Sharding strategies: range, hash, directory-based. Cross-shard query problems</li>
+            <li>Connection pool tuning: HikariCP configuration, pool sizing formula</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Analyze slow query in Postgres: EXPLAIN ANALYZE, add indexes, measure improvement</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Add Redis caching layer to existing Spring Boot app. Implement cache invalidation</div>
+              <div class="day-time">3h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">System design practice: design a URL shortener with 100M req/day (write up, not tutorial copy)</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">HikariCP deep dive: tune pool for project's expected load, document reasoning</div>
+              <div class="day-time">1.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">GitHub: publish system design doc for Week 5. LinkedIn: caching tradeoffs post</div>
+              <div class="day-time">1.5h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Query optimization case study: before/after EXPLAIN output, explanation of changes</li>
+            <li>System design write-up published on GitHub or personal site</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">1 system design doc published</span>
+            <span class="kpi-chip">query optimization case study</span>
+            <span class="kpi-chip">Redis caching lab done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 6 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 6</span>
+        <span class="week-phase-tag" style="background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;">Build</span>
+      </div>
+      <div class="week-title">AI Engineering Foundations: RAG, Vectors, Prompt Architecture</div>
+      <div class="week-focus">Build your first RAG pipeline. Understand embeddings, chunking, retrieval quality.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Embeddings: what they encode, dimensionality, cosine similarity vs dot product</li>
+            <li>RAG pipeline stages: ingestion, chunking, embedding, indexing, retrieval, reranking, generation</li>
+            <li>Vector databases: pgvector, Qdrant, Weaviate — tradeoffs for production</li>
+            <li>Chunking strategies: fixed, semantic, hierarchical. How bad chunking kills retrieval quality</li>
+            <li>Prompt architecture: system prompts, few-shot patterns, tool calling basics</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Build end-to-end RAG pipeline (Python or Java): ingest PDF → chunk → embed → pgvector → query</div>
+              <div class="day-time">3h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Experiment with 3 chunking strategies. Measure retrieval quality manually on 10 test queries</div>
+              <div class="day-time">2h experiment</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Add reranking (Cohere Rerank or cross-encoder). Compare quality before/after</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Start project: AI Knowledge Search service — ingest module architecture</div>
+              <div class="day-time">2.5h project</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">LinkedIn: "I built a RAG pipeline. Here's what actually matters (and what tutorials skip)"</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>GitHub: basic RAG pipeline with 3 chunking strategy comparison (documented)</li>
+            <li>Project milestone: ingest module designed and partially built</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Resources</div>
+          <div class="resource-row">
+            <span class="resource-tag">LangChain4j (Java)</span>
+            <span class="resource-tag">pgvector</span>
+            <span class="resource-tag">Anthropic Cookbook</span>
+            <span class="resource-tag">RAGAS (eval framework)</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">RAG pipeline running end-to-end</span>
+            <span class="kpi-chip">chunking experiment documented</span>
+            <span class="kpi-chip">project ingest module started</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Career Impact</div>
+          <ul class="detail-list">
+            <li>AI Engineering is the highest-leverage skill you can add in 2025-2026</li>
+            <li>Backend engineers who can build production RAG systems command $40-80/hr consulting premium</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 7 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 7</span>
+        <span class="week-phase-tag" style="background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;">Build</span>
+      </div>
+      <div class="week-title">Cloud Architecture, Rate Limiting & Fault Tolerance</div>
+      <div class="week-focus">AWS production patterns, circuit breakers, bulkheads, rate limiting algorithms.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Rate limiting algorithms: token bucket, leaky bucket, sliding window (when each fits)</li>
+            <li>Distributed rate limiting with Redis: Lua scripts, atomic operations</li>
+            <li>Resilience patterns: circuit breaker states, bulkhead pattern, timeout pyramids</li>
+            <li>AWS: ECS vs EKS for your project, ALB rules, Auto Scaling policies, CDK basics</li>
+            <li>Fault injection: chaos engineering principles, what to break first</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Implement distributed rate limiter in Redis (sliding window, Lua script)</div>
+              <div class="day-time">3h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Add Resilience4j to project: circuit breaker + bulkhead + retry with exponential backoff</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">AWS: deploy project backend to ECS with ALB. Set up CloudWatch alarms</div>
+              <div class="day-time">3h cloud</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Write ADR: ECS vs EKS decision for the project. Publish on GitHub</div>
+              <div class="day-time">1.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">LinkedIn post: "Circuit breakers aren't optional in distributed systems — here's why"</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Redis rate limiter: published with test cases and benchmark</li>
+            <li>Project backend: first deployment live on AWS ECS</li>
+            <li>ADR published on GitHub</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">Project deployed to AWS</span>
+            <span class="kpi-chip">rate limiter on GitHub</span>
+            <span class="kpi-chip">Resilience4j integrated</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 8 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 8</span>
+        <span class="week-phase-tag" style="background:#E1F5EE;color:#085041;border:0.5px solid #5DCAA5;">Build</span>
+      </div>
+      <div class="week-title">AI Agents, Tool Calling & Orchestration</div>
+      <div class="week-focus">Build foundational production AI workflows. Prioritize RAG, retrieval quality, evaluation, and observability before advanced multi-agent orchestration.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>AI agent architecture: ReAct loop, tool selection, error recovery, max iterations</li>
+            <li>Tool calling: defining schemas, parsing LLM output, handling failures gracefully</li>
+            <li>Multi-agent coordination: when to split work, orchestrator vs sub-agent pattern</li>
+            <li>AI observability: logging prompts/completions, latency, token cost, hallucination detection</li>
+            <li>AI evaluation: RAGAS metrics, LLM-as-judge, human eval groundtruth</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Build a tool-calling agent with 3 tools: search, summarize, database query</div>
+              <div class="day-time">3h build</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Add the agent into the main project (healthcare AI search use case)</div>
+              <div class="day-time">3h project</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Instrument agent with LangFuse or Arize: track latency, cost, quality per query</div>
+              <div class="day-time">2h observability</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Set up evaluation harness: 20 test queries with expected outputs, run RAGAS</div>
+              <div class="day-time">2h eval</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Phase 2 retrospective: what's on track, what's behind, adjust Week 9-12 plan</div>
+              <div class="day-time">1.5h review</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>AI agent integrated into project with observability dashboard live</li>
+            <li>Evaluation harness: 20 test cases, baseline RAGAS scores documented</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">Agent integrated in project</span>
+            <span class="kpi-chip">eval harness running</span>
+            <span class="kpi-chip">LangFuse dashboard live</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Phase 2 Review Questions</div>
+          <ul class="detail-list">
+            <li>Is the core project running end-to-end (even if rough)?</li>
+            <li>Do you have a deployed URL you can share with potential clients?</li>
+            <li>Have you published 8+ LinkedIn posts and 8+ GitHub commits?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div id="phase3" class="phase-content">
+  <div class="week-grid">
+
+    <!-- WEEK 9 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 9</span>
+        <span class="week-phase-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F09595;">Scale</span>
+      </div>
+      <div class="week-title">Microservices, Service Mesh & API Design at Scale</div>
+      <div class="week-focus">Service decomposition, API versioning, gRPC, distributed locking, saga orchestration.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Microservices boundaries: DDD aggregate roots, bounded contexts, anti-corruption layers</li>
+            <li>gRPC vs REST vs GraphQL: when each is actually worth the overhead</li>
+            <li>Distributed locking: Redlock algorithm, fencing tokens, why distributed locks are hard</li>
+            <li>API versioning strategies: URI, header, content negotiation — tradeoffs in practice</li>
+            <li>Staff communication: writing design docs that drive alignment across 3+ teams</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Write full project design doc (PRD-level): problem, solution, alternatives, risks, metrics</div>
+              <div class="day-time">3h writing</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Refactor project API: add versioning, proper error contracts, OpenAPI spec</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Add distributed locking for idempotency in project's document ingestion pipeline</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Load test project with k6: 100 concurrent users, analyze bottlenecks</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">LinkedIn: publish project design doc snippet + architecture diagram (credibility content)</div>
+              <div class="day-time">1h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Public design doc: staff-quality writing, published on GitHub or personal site</li>
+            <li>Load test report: k6 results with bottleneck analysis</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">design doc published</span>
+            <span class="kpi-chip">load test report</span>
+            <span class="kpi-chip">API versioned and documented</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Career Impact</div>
+          <ul class="detail-list">
+            <li>Writing staff-quality design docs is THE signal that separates L5 from L6 at Google</li>
+            <li>Published docs become portfolio artifacts for consulting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 10 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 10</span>
+        <span class="week-phase-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F09595;">Scale</span>
+      </div>
+      <div class="week-title">Production Hardening: Reliability, Observability & Incident Response</div>
+      <div class="week-focus">SLOs, error budgets, alerting strategy, runbooks, production war-gaming.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>SLO design: what to measure, realistic targets, error budget policies</li>
+            <li>Alerting: symptom-based vs cause-based, alert fatigue, PagerDuty runbooks</li>
+            <li>Reliability engineering: toil reduction, reliability as a feature, blameless postmortems</li>
+            <li>Capacity planning: traffic projection, headroom, scaling triggers</li>
+            <li>AI-specific reliability: LLM latency spikes, token cost monitoring, fallback strategies</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Define 3 SLOs for the project. Set up Prometheus alerts + Grafana dashboard</div>
+              <div class="day-time">3h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Write incident runbook for top 3 failure modes. Make it executable, not vague</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Chaos test: kill a pod, slow down Redis, inject 50% packet loss. Document behavior</div>
+              <div class="day-time">2.5h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Add token cost tracking to AI agent. Set budget alerts. Implement fallback LLM</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Write postmortem template. LinkedIn: "How I think about reliability budgets in AI systems"</div>
+              <div class="day-time">1.5h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Grafana dashboard: live for the project (screenshot for portfolio)</li>
+            <li>Runbook: 3 incident scenarios, published on GitHub</li>
+            <li>Chaos test report: documented failures and fixes</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">SLOs defined and monitored</span>
+            <span class="kpi-chip">chaos tests completed</span>
+            <span class="kpi-chip">runbooks published</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 11 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 11</span>
+        <span class="week-phase-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F09595;">Scale</span>
+      </div>
+      <div class="week-title">Staff-Level Communication & Technical Leadership</div>
+      <div class="week-focus">Influence without authority, driving alignment, technical mentorship, writing that scales.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Topics</div>
+          <ul class="detail-list">
+            <li>Staff Engineer archetypes: Tech Lead, Architect, Solver, Right Hand — know which you are</li>
+            <li>Influence without authority: proposal framing, building coalitions, managing up</li>
+            <li>Technical mentoring: 1:1 frameworks, how to grow junior engineers deliberately</li>
+            <li>Writing at scale: RFCs, design docs, postmortems, ADRs — format and discipline</li>
+            <li>Interview prep: system design interview structure, what L6 panels look for</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Write an RFC for a hypothetical migration in your current work context (practice the format)</div>
+              <div class="day-time">2.5h writing</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Mock system design interview (record yourself): design a real-time document collaboration system</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Write "what I learned in 90 days" draft — your capstone technical narrative</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Update LinkedIn headline, About, and Featured section. Update GitHub profile README</div>
+              <div class="day-time">2h portfolio</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">Identify 3 companies to target. Reach out to 2 staff engineers for informational chats</div>
+              <div class="day-time">1.5h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>RFC published: polished, shareable, demonstrates scope-of-impact thinking</li>
+            <li>LinkedIn profile: fully updated with 3 featured portfolio pieces</li>
+            <li>Mock system design recording reviewed and self-critiqued</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">1 RFC published</span>
+            <span class="kpi-chip">LinkedIn profile updated</span>
+            <span class="kpi-chip">2 outreach messages sent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 12 -->
+    <div class="week-card" onclick="toggleWeek(this)">
+      <div class="week-header">
+        <span class="week-num">Week 12</span>
+        <span class="week-phase-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F09595;">Scale</span>
+      </div>
+      <div class="week-title">Project Polish, Portfolio Launch & Monetization Activation</div>
+      <div class="week-focus">Final project hardening, case study write-up, first consulting inquiry generation.</div>
+      <div class="week-detail">
+        <div class="detail-section">
+          <div class="detail-label">Daily Breakdown</div>
+          <div class="day-grid">
+            <div class="day-block">
+              <div class="day-name">Mon</div>
+              <div class="day-task">Project README: architecture diagram, demo video (Loom), deployment guide</div>
+              <div class="day-time">3h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Tue</div>
+              <div class="day-task">Publish project case study: problem, architecture decisions, metrics, lessons learned</div>
+              <div class="day-time">3h writing</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Wed</div>
+              <div class="day-task">Launch consulting positioning: set Toptal/arc.dev profile, write consulting pitch doc</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Thu</div>
+              <div class="day-task">Final LinkedIn post: 90-day thread summary. Tag project. Link to all artifacts</div>
+              <div class="day-time">2h</div>
+            </div>
+            <div class="day-block">
+              <div class="day-name">Fri</div>
+              <div class="day-task">90-day personal retrospective: what worked, what didn't, Day 91 plan</div>
+              <div class="day-time">2h</div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Deliverable</div>
+          <ul class="detail-list">
+            <li>Live project with Loom demo, architecture diagram, and full README</li>
+            <li>Published case study (1500+ words, shareable)</li>
+            <li>Consulting profile active on at least 1 platform</li>
+            <li>12 LinkedIn posts published over 90 days</li>
+          </ul>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">KPI Targets</div>
+          <div class="kpi-row">
+            <span class="kpi-chip">project publicly live</span>
+            <span class="kpi-chip">case study published</span>
+            <span class="kpi-chip">consulting profile active</span>
+            <span class="kpi-chip">12 LinkedIn posts done</span>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-label">Phase 3 Review Questions</div>
+          <ul class="detail-list">
+            <li>Can you demo the project to a potential client in 5 minutes?</li>
+            <li>Does your LinkedIn show Staff-level work, not just job titles?</li>
+            <li>Have you had at least 1 conversation with someone about consulting or a new role?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROJECT BLUEPRINT -->
+<div id="project" class="phase-content">
+  <div style="margin-bottom: 1.5rem;">
+    <div style="font-size: 18px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px;">Project: MedKnow — Healthcare AI Knowledge Search System</div>
+    <div style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.5;">A production-grade RAG system that lets healthcare staff search internal protocols, policies, and clinical guidelines using natural language — with verifiable citations, audit logging, and HIPAA-aware design.</div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-sitemap" aria-hidden="true"></i> Architecture Overview</div>
+    <ul class="detail-list" style="font-size: 14px;">
+      <li>Ingestion service: PDF/DOCX → chunker → OpenAI/Cohere embeddings → pgvector (Postgres)</li>
+      <li>Query service: Spring Boot API → intent classification → hybrid search (BM25 + vector) → reranker → LLM generation with citations</li>
+      <li>Agent layer: tool-calling agent for multi-hop queries (e.g., "what's the protocol for X in patients with Y?")</li>
+      <li>Observability: OpenTelemetry → Prometheus → Grafana. LangFuse for LLM traces and cost tracking</li>
+      <li>Auth: JWT with role-based access. Audit log for every query (compliance requirement)</li>
+      <li>Infrastructure: AWS ECS (Fargate), RDS Postgres with pgvector, ElastiCache (Redis), ALB</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-flag" aria-hidden="true"></i> Milestones</div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 4</span>
+      <div class="milestone-content">
+        <div class="milestone-title">Architecture Defined</div>
+        <div class="milestone-desc">System diagram complete. Tech stack decisions documented in ADRs. Kafka topology for ingestion pipeline designed.</div>
+      </div>
+    </div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 6</span>
+      <div class="milestone-content">
+        <div class="milestone-title">Ingestion + RAG Core Running</div>
+        <div class="milestone-desc">End-to-end: upload PDF → embedded → stored → searchable. Basic query endpoint returning citations. Running locally in Docker Compose.</div>
+      </div>
+    </div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 7</span>
+      <div class="milestone-content">
+        <div class="milestone-title">First Cloud Deployment</div>
+        <div class="milestone-desc">ECS deployment live. RDS Postgres with pgvector provisioned. ALB + HTTPS. Basic CloudWatch monitoring.</div>
+      </div>
+    </div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 8</span>
+      <div class="milestone-content">
+        <div class="milestone-title">Agent + Evaluation Harness Live</div>
+        <div class="milestone-desc">Multi-tool agent integrated. LangFuse dashboard tracking cost and quality. 20-query eval suite with RAGAS baseline.</div>
+      </div>
+    </div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 10</span>
+      <div class="milestone-content">
+        <div class="milestone-title">Production Hardened</div>
+        <div class="milestone-desc">SLOs defined. Grafana dashboard live. Chaos tests completed. Rate limiting + circuit breakers in place. Runbooks published.</div>
+      </div>
+    </div>
+    <div class="project-milestone">
+      <span class="milestone-week">Week 12</span>
+      <div class="milestone-content">
+        <div class="milestone-title">Portfolio-Ready & Monetizable</div>
+        <div class="milestone-desc">Public GitHub with full README, architecture diagrams, Loom demo. Case study published. Consulting pitch written around this project.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-shield-check" aria-hidden="true"></i> Why This Project Wins</div>
+    <ul class="detail-list" style="font-size: 14px;">
+      <li>Healthcare domain knowledge + AI = rare combination that commands consulting premium</li>
+      <li>Every architectural decision maps to a learning topic — no busy work</li>
+      <li>HIPAA-aware design signals enterprise readiness to clients</li>
+      <li>Directly monetizable: clinics, hospital IT teams, health-tech startups all need this</li>
+      <li>White-label potential: swap the knowledge base, sell to legal, financial services, or enterprise IT</li>
+    </ul>
+  </div>
+</div>
+
+<!-- MONETIZATION -->
+<div id="monetize" class="phase-content">
+  <div style="margin-bottom: 1rem; font-size: 14px; color: var(--color-text-secondary);">Realistic income paths after 90 days, ordered by time-to-first-₹.</div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-currency-dollar" aria-hidden="true"></i> Consulting & Freelance</div>
+    <div class="monetize-grid">
+      <div class="monetize-card">
+        <div class="monetize-title">AI Integration Consulting</div>
+        <div class="monetize-desc">Help companies add RAG/AI search to existing systems. Your MedKnow project is the proof of work. Target: health-tech startups, enterprise IT.</div>
+        <div class="monetize-rev">$60–120/hr · Fastest path</div>
+      </div>
+      <div class="monetize-card">
+        <div class="monetize-title">Backend Performance Audit</div>
+        <div class="monetize-desc">One-week engagement: profile their Java system, find GC/thread/query bottlenecks, deliver a prioritized report. Your JVM depth is the differentiator.</div>
+        <div class="monetize-rev">$2,000–5,000/engagement</div>
+      </div>
+      <div class="monetize-card">
+        <div class="monetize-title">System Design Review</div>
+        <div class="monetize-desc">Review architecture for startups or engineering teams. 2–3 hour session + written report. Highly scalable, low time commitment per client.</div>
+        <div class="monetize-rev">$500–1,500/session</div>
+      </div>
+      <div class="monetize-card">
+        <div class="monetize-title">Platform Consulting (Toptal/arc.dev)</div>
+        <div class="monetize-desc">Staff-level Java/cloud engineers with AI chops are underrepresented. Your profile + project = strong acceptance odds.</div>
+        <div class="monetize-rev">$80–150/hr through platform</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-package" aria-hidden="true"></i> Product & Content Income</div>
+    <div class="monetize-grid">
+      <div class="monetize-card">
+        <div class="monetize-title">Technical eBook / Guide</div>
+        <div class="monetize-desc">"Building Production RAG Systems for Java Engineers" — your unique angle. Write during Week 10-12 when the project is done. Sell on Gumroad.</div>
+        <div class="monetize-rev">₹1,000–4,000/copy · Passive</div>
+      </div>
+      <div class="monetize-card">
+        <div class="monetize-title">MedKnow as SaaS</div>
+        <div class="monetize-desc">White-label the project. Charge small clinics or law firms ₹5,000–20,000/month for hosted AI search. Very low marginal cost once built.</div>
+        <div class="monetize-rev">Recurring · Month 4+</div>
+      </div>
+      <div class="monetize-card">
+        <div class="monetize-title">Technical Newsletter</div>
+        <div class="monetize-desc">Weekly staff-level system design post. 1,000 subscribers at ₹300/month = ₹3L/month. Compounds with LinkedIn presence.</div>
+        <div class="monetize-rev">Slow build · High long-term ROI</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-brand-linkedin" aria-hidden="true"></i> LinkedIn Content Strategy</div>
+    <ul class="detail-list" style="font-size: 14px;">
+      <li>Post cadence: 1 per week, every week. Missing a week = losing momentum you built</li>
+      <li>Content mix: 40% technical depth posts (JVM, distributed systems), 40% project updates with screenshots/diagrams, 20% opinion/lessons-learned</li>
+      <li>Format: short hook line → 5-7 bullets of insight → call to action. No walls of text</li>
+      <li>Avoid: "I'm excited to share" openers, vague motivational content, engagement-bait polls</li>
+      <li>Goal: 500+ followers from engineering community by Day 90. Each follower is a potential referral or client</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-brand-github" aria-hidden="true"></i> GitHub Strategy</div>
+    <ul class="detail-list" style="font-size: 14px;">
+      <li>Repos to publish: MedKnow (main project), concurrency-patterns-java, system-design-docs, distributed-systems-notes</li>
+      <li>Every repo needs: proper README with architecture diagram, problem statement, decisions made, how to run it</li>
+      <li>GitHub profile README: who you are, what you build, what you're currently learning, links to LinkedIn and writing</li>
+      <li>Commit discipline: small, meaningful commits with clear messages — clients and employers read your commit history</li>
+      <li>Stars are vanity — what matters is that anyone who lands on your profile can hire you in 60 seconds</li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="section-card">
+  <div class="section-title"><i class="ti ti-heart-rate-monitor" aria-hidden="true"></i> Sustainability Rules</div>
+  <ul class="detail-list" style="font-size:14px;">
+    <li>Do not skip weeks because they feel incomplete. Consistency compounds more than perfection.</li>
+    <li>If workload becomes heavy, finish only MUST tasks and carry SHOULD tasks forward.</li>
+    <li>Protect recovery, sleep, fitness, and your full-time job performance.</li>
+    <li>Publishing one meaningful artifact every week matters more than consuming more courses.</li>
+    <li>By Day 150, depth and visible proof-of-work matter more than speed.</li>
+  </ul>
+</div>
+
+
+<!-- CHECKPOINTS & MISTAKES -->
+<div id="checkpoints" class="phase-content">
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-calendar-check" aria-hidden="true"></i> Monthly Checkpoints</div>
+    <div class="checkpoint-row">
+      <div class="checkpoint-card">
+        <div class="checkpoint-month">Month 1 — Day 30</div>
+        <ul>
+          <li>JVM + concurrency cheatsheet published</li>
+          <li>Distributed systems ADR template done</li>
+          <li>Kafka Outbox demo on GitHub</li>
+          <li>Project architecture defined</li>
+          <li>4 LinkedIn posts published</li>
+        </ul>
+      </div>
+      <div class="checkpoint-card">
+        <div class="checkpoint-month">Month 2 — Day 60</div>
+        <ul>
+          <li>Project deployed to AWS (rough but live)</li>
+          <li>RAG pipeline running end-to-end</li>
+          <li>AI agent integrated with observability</li>
+          <li>Eval harness with baseline scores</li>
+          <li>8 LinkedIn posts done</li>
+        </ul>
+      </div>
+      <div class="checkpoint-card">
+        <div class="checkpoint-month">Month 3 — Day 90</div>
+        <ul>
+          <li>Project production-hardened</li>
+          <li>SLOs and Grafana dashboard live</li>
+          <li>Design doc + RFC published</li>
+          <li>Consulting profile active</li>
+          <li>Case study published</li>
+          <li>12 LinkedIn posts done</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Mistakes to Avoid</div>
+    <ul class="mistake-list">
+      <li><span class="mistake-x">✕</span>Switching project ideas after Week 6. The compounding value is in depth, not novelty. Ship the thing.</li>
+      <li><span class="mistake-x">✕</span>Treating LinkedIn posts as optional. They are half the plan. Engineers who write publicly build 10x the network of those who don't.</li>
+      <li><span class="mistake-x">✕</span>Consuming too many resources for any one topic. One good book + one lab exercise > three half-read books.</li>
+      <li><span class="mistake-x">✕</span>Perfecting the project before deploying. Deploy ugly. Polish iteratively. A deployed rough project beats a polished local one.</li>
+      <li><span class="mistake-x">✕</span>Skipping the documentation step. The GitHub artifact is what clients and recruiters evaluate — not the code you ran locally and forgot.</li>
+      <li><span class="mistake-x">✕</span>Starting DSA prep out of anxiety. At Staff level, system design depth wins over algorithmic breadth. Don't let leetcode FOMO derail the plan.</li>
+      <li><span class="mistake-x">✕</span>Keeping the project private. Fear of judgment costs you visibility. Publish early, improve publicly.</li>
+    </ul>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-clock" aria-hidden="true"></i> When You're Low on Time</div>
+    <div style="font-size: 14px; color: var(--color-text-secondary); line-height: 1.6;">
+      Prioritize in this order: (1) Project work — anything that moves MedKnow forward ships learning AND portfolio value simultaneously. (2) LinkedIn post — 45 minutes of writing compounds over months. (3) Hands-on labs — doing beats reading. (4) Reading/consuming — cut this first. One focused hour of building > two hours of passive consumption.
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title"><i class="ti ti-road" aria-hidden="true"></i> After Day 90: Long-Term Roadmap</div>
+    <ul class="detail-list" style="font-size: 14px;">
+      <li>Month 4–6: Land first consulting engagement using the project as proof of work. Or apply to 2 target companies with polished portfolio.</li>
+      <li>Month 6–9: Deepen Kubernetes/platform engineering if targeting Staff at hyperscalers. Or iterate MedKnow toward SaaS product with 3 paying pilots.</li>
+      <li>Month 9–12: System design interviews at Google/Microsoft if that's the goal. By now you'll have a body of work that makes the conversations very different.</li>
+      <li>Ongoing: Publish one substantial technical piece per month. The compounding effect of writing publicly takes 6–12 months to show, but it becomes your most durable career asset.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function showPhase(id) {
+  document.querySelectorAll('.phase-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.phase-tab').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleWeek(card) {
+  const isExpanded = card.classList.contains('expanded');
+  document.querySelectorAll('.week-card.expanded').forEach(c => c.classList.remove('expanded'));
+  if (!isExpanded) card.classList.add('expanded');
+}
+</script>
