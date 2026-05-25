@@ -449,7 +449,79 @@
   }
 </style>
 
+<style>
+  body {
+    background: #0b1020;
+    color: #e6edf3;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+    max-width: 1400px;
+    margin: auto;
+    padding: 24px;
+  }
+
+  .wrap {
+    background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .45);
+  }
+
+  .top-stats .stat {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform .2s ease;
+  }
+
+  .top-stats .stat:hover {
+    transform: translateY(-4px);
+  }
+
+  .wk {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all .2s ease;
+  }
+
+  .wk:hover {
+    border-color: #60a5fa;
+  }
+
+  .day-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .info-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .tab.on {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    border: none;
+  }
+</style>
+
+
 <div class="wrap">
+
+  <div style="margin-bottom:28px;padding:32px;border-radius:24px;
+background:linear-gradient(135deg,#2563eb 0%,#7c3aed 100%);
+box-shadow:0 20px 40px rgba(37,99,235,.35);">
+    <div
+      style="font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.85;margin-bottom:10px;">
+      Staff Engineer Transformation Roadmap
+    </div>
+    <div style="font-size:42px;font-weight:800;line-height:1.1;margin-bottom:14px;">
+      120-Day AI-Era Staff Engineer Plan
+    </div>
+    <div style="max-width:900px;font-size:18px;opacity:.92;line-height:1.6;">
+      Production-focused roadmap for backend engineering, distributed systems, AI engineering, and Staff-level growth.
+    </div>
+  </div>
+
 
   <div class="top-stats">
     <div class="stat">
@@ -1818,5 +1890,15 @@
   }
   function tog(card) {
     card.classList.toggle('open');
+  }
+</script>
+
+<script>
+  function tog(el) { el.classList.toggle('open') }
+  function sw(btn, id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    btn.classList.add('on');
+    document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
   }
 </script>
